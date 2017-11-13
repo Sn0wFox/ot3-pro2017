@@ -1,7 +1,7 @@
 //
 // Created by arrouan on 14/10/16.
 //
-
+#ifdef GRAPHICS
 #ifndef PDC_EVOL_MODEL_GRAPHICDISPLAY_H
 #define PDC_EVOL_MODEL_GRAPHICDISPLAY_H
 
@@ -33,3 +33,4 @@ class GraphicDisplay {
 
 
 #endif //PDC_EVOL_MODEL_GRAPHICDISPLAY_H
+#endif
