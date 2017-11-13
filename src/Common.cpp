@@ -2,16 +2,16 @@
 // Created by arrouan on 28/09/16.
 //
 
-#include <stdint-gcc.h>
+#include <stdint.h>
 #include <random>
-#include <zlib.h>
+//#include <zlib.h>
 #include "Common.h"
 
 float Common::matrix_binding_[BINDING_MATRIX_SIZE*BINDING_MATRIX_SIZE];
 
 void Common::init_binding_matrix(uint32_t seed) {
 
-  std::mt19937 float_gen_;
+/*  std::mt19937 float_gen_;
   float_gen_.seed(seed);
   std::uniform_real_distribution<float> dis_number(-1, 1);
   std::uniform_int_distribution<int8_t> dis_percent(0,100);
@@ -23,12 +23,12 @@ void Common::init_binding_matrix(uint32_t seed) {
       else
         matrix_binding_[i*BINDING_MATRIX_SIZE+j]=0;
     }
-  }
+  }*/
 
 }
 
 void Common::save_binding_matrix() {
-  char* lookup_table_file_name = new char[100];
+/*  char* lookup_table_file_name = new char[100];
 
   sprintf( lookup_table_file_name, "binding_matrix.zip" );
 
@@ -50,11 +50,11 @@ void Common::save_binding_matrix() {
 
   gzclose( lookup_table_file );
 
-  delete[] lookup_table_file_name;
+  delete[] lookup_table_file_name;*/
 }
 
 void Common::load_binding_matrix() {
-  char* lookup_table_file_name = new char[100];
+/*  char* lookup_table_file_name = new char[100];
 
   sprintf( lookup_table_file_name, "binding_matrix.zip" );
 
@@ -77,5 +77,5 @@ void Common::load_binding_matrix() {
 
   gzclose( lookup_table_file );
 
-  delete[] lookup_table_file_name;
+  delete[] lookup_table_file_name;*/
 }

@@ -19,8 +19,8 @@ if(WITH_GRAPHICS_CONTEXT)
 endif(WITH_GRAPHICS_CONTEXT)
 
 
-find_package(ZLIB REQUIRED)
-if(ZLIB_FOUND)
-    include_directories(${ZLIB_INCLUDE_DIR})
-    target_link_libraries(pdc_evol_model ${ZLIB_LIBRARIES})
-endif(ZLIB_FOUND)
+#find_package(ZLIB REQUIRED)
+#if(ZLIB_FOUND)
+#    include_directories(${ZLIB_INCLUDE_DIR})
+#    target_link_libraries(pdc_evol_model ${ZLIB_LIBRARIES})
+#endif(ZLIB_FOUND)

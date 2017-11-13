@@ -1,6 +1,7 @@
 //
 // Created by arrouan on 14/10/16.
 //
+#ifdef GRAPHICS
 
 #include "GraphicDisplay.h"
 #include "World.h"
@@ -163,3 +164,4 @@ sf::Color GraphicDisplay::get_color(double value) {
 
 
 
+#endif
