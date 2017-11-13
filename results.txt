@@ -1,0 +1,12 @@
+=== World::evolution_step() parallelization ===
+Strong scaling (100 evolution steps):
+	1 core: 340247 µs
+	2 cores: 211780 µs
+	3 cores: 214682 µs
+	4 cores: 188246 µs
+
+Weak scaling (100 evolution steps):
+	1 core (32 cells per core): 340247 µs
+	2 cores (45 cells per core): 419212 µs
+	3 cores (55 cells per core): 592057 µs
+	4 cores (64 cells per core): 736597 µs

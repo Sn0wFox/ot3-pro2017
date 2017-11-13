@@ -56,7 +56,13 @@ class Common {
     constexpr static double GRADIENT_SCALE = 30;
 
     const static int Number_Degradation_Step = 10;
-    const static int Number_Evolution_Step = 1000000;
+    const static int Number_Evolution_Step = 100;
+
+    /** Parallelization **/
+    const static int WORLD_SIZE = 64;
+    const static int EVOLUTION_STEP_PARAL_NBCORES = 4;
+
+
 };
 
 

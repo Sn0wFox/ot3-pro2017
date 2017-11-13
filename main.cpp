@@ -9,7 +9,7 @@ int main() {
   Common::init_binding_matrix(897685687);
 
   printf("Create World\n");
-  World* world = new World(32, 32, 897986875);
+  World* world = new World(Common::WORLD_SIZE, Common::WORLD_SIZE, 897986875);
 
   printf("Initialize environment\n");
   world->init_environment();

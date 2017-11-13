@@ -26,11 +26,12 @@
 // ****************************************************************************
 
 #include <list>
+#include <omp.h>
 #include "World.h"
 #include "DNA.h"
 #include "Organism.h"
 #include "GraphicDisplay.h"
-
+#include "Chrono.h"
 
 World::World(int width, int height, uint32_t seed) {
   width_ = width;
@@ -116,8 +117,15 @@ void World::run_evolution() {
 #if WITH_GRAPHICS_CONTEXT
   GraphicDisplay* display = new GraphicDisplay(this);
 #endif
+
+  long evolutionStep_totalDuration = 0;
   while (time_ < Common::Number_Evolution_Step) {
+    
+    Chrono evolutionStep_chrono;
+    evolutionStep_chrono.start();
     evolution_step();
+    evolutionStep_totalDuration += evolutionStep_chrono.stop();
+
     int living_one = 0;
     for (int i = 0; i < width_; i++) {
       for (int j = 0; j < height_; j++) {
@@ -141,6 +149,8 @@ void World::run_evolution() {
     }
     time_++;
   }
+
+  std::cout <<"Avg evolution step duration: " << (evolutionStep_totalDuration / Common::Number_Evolution_Step) << " µs" << std::endl;
 }
 
 void World::evolution_step() {
@@ -154,6 +164,7 @@ void World::evolution_step() {
 
   std::list<int> deadCells; 
 
+  omp_set_num_threads(Common::EVOLUTION_STEP_PARAL_NBCORES);
   #pragma omp parallel for shared(deadCells) collapse(2)
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
