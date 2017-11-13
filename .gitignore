@@ -1,0 +1,9 @@
+# Visual studio
+*.vsproject
+*.vs
+.vs/
+
+# CMake
+CMakeFiles/*
+CMakeCache.txt
+
