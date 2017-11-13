@@ -131,7 +131,7 @@ void World::run_evolution() {
 #endif
     
     stats();
-    if (time_%100 == 0) {
+    if (time_%Common::LOG_STEPS == 0) {
       printf(
           "Evolution at step %d -- Number of Organism %d  (Dead: %d -- Mutant: %d)-- Min Fitness: %f -- Max Fitness: %f\n",
           time_, living_one, death_, new_mutant_, min_fitness_, max_fitness_);
