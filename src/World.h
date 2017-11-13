@@ -12,6 +12,7 @@
 #include <random>
 #include <iostream>
 #include <fstream>
+#include <list>
 
 class GridCell;
 

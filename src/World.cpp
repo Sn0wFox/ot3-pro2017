@@ -25,6 +25,7 @@
 //
 // ****************************************************************************
 
+#include <list>
 #include "World.h"
 #include "DNA.h"
 #include "Organism.h"
@@ -151,6 +152,9 @@ void World::evolution_step() {
 
   Organism* best;
 
+  std::list<int> deadCells; 
+
+  #pragma omp parallel for shared(deadCells) collapse(2)
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
       if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
@@ -162,13 +166,19 @@ void World::evolution_step() {
                      j]->organism_->compute_protein_concentration();
 
         if (grid_cell_[i * width_ + j]->organism_->dying_or_not()) {
-          delete grid_cell_[i * width_ + j]->organism_;
-          grid_cell_[i * width_ + j]->organism_ = nullptr;
-          death_++;
+          deadCells.push_back(i * width_ + j);
         }
       }
     }
   }
+
+  // Remove dead organisms
+  for (std::list<int>::const_iterator it = deadCells.begin(); it != deadCells.end(); ++it) {
+      delete grid_cell_[*it]->organism_;
+      grid_cell_[*it]->organism_ = nullptr;
+      death_++;
+  }
+
 /*
   printf("Move\n");
   for (int i = 0; i < width_; i++) {
