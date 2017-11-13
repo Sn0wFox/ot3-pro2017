@@ -1,7 +1,10 @@
+# Build folder
+build/
+
 # Visual studio
-*.vsproject
-*.vs
 .vs/
+*.vs
+*.vsproject
 
 # CMake
 CMakeFiles/*
