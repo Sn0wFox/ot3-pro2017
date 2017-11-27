@@ -5,6 +5,7 @@
 #include "Organism.h"
 #include "DNA.h"
 #include "Common.h"
+#include <map>
 
 
 void Organism::translate_RNA() {
@@ -251,47 +252,62 @@ void Organism::init_organism() {
   translate_move();
 }
 
+void Organism::current_concentration_compute()
+{
+	int rna_id = 0;
+	for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
+		float delta_pos = 0, delta_neg = 0;
+		for (auto prot : rna_influence_[rna_id]) {
+			if (prot.second > 0)
+				delta_pos += prot.second * protein_list_map_[prot.first]->concentration_;
+			else
+				delta_neg -= prot.second * protein_list_map_[prot.first]->concentration_;
+		}
+
+		float delta_pos_pow_n = pow(delta_pos, Common::hill_shape_n);
+		float delta_neg_pow_n = pow(delta_neg, Common::hill_shape_n);
+
+		// [P] ------- Paralellizable ???
+
+		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
+			* (Common::hill_shape
+				/ (delta_neg_pow_n + Common::hill_shape))
+			* (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
+				* (delta_pos_pow_n /
+				(delta_pos_pow_n +
+					Common::hill_shape)));
+
+		// -------------------------
+		rna_id++;
+	}
+}
+
 void Organism::compute_protein_concentration() {
-  int rna_id = 0;
-  for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
-    float delta_pos = 0, delta_neg = 0;
-    for (auto prot : rna_influence_[rna_id]) {
-      if (prot.second > 0)
-        delta_pos += prot.second * protein_list_map_[prot.first]->concentration_;
-      else
-        delta_neg -= prot.second * protein_list_map_[prot.first]->concentration_;
-    }
+	current_concentration_compute();
 
-    float delta_pos_pow_n = pow(delta_pos,Common::hill_shape_n);
-    float delta_neg_pow_n = pow(delta_neg,Common::hill_shape_n);
+	delta_concentration_compute();
+}
 
-     rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
-                               * (Common::hill_shape
-                                  / (delta_neg_pow_n + Common::hill_shape))
-                               * (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
-                                      * (delta_pos_pow_n /
-                                         (delta_pos_pow_n +
-                                             Common::hill_shape)));
-    rna_id++;
-  }
+void Organism::delta_concentration_compute()
+{
+	std::map<float, float> delta_concentration;
+	for (auto rna : rna_produce_protein_) {
+		for (auto prot : rna.second) {
+			if (delta_concentration.find(prot.first) == delta_concentration.end()) {
+				delta_concentration[prot.first] = rna_list_[rna.first]->current_concentration_;
+			}
+			else {
+				delta_concentration[prot.first] += rna_list_[rna.first]->current_concentration_;
+			}
+		}
+	}
 
-  std::unordered_map<float,float> delta_concentration;
-  for (auto rna : rna_produce_protein_) {
-    for (auto prot : rna_produce_protein_[rna.first]) {
-      if (delta_concentration.find(prot.first) == delta_concentration.end()) {
-        delta_concentration[prot.first] = rna_list_[rna.first]->current_concentration_;
-      } else {
-        delta_concentration[prot.first] += rna_list_[rna.first]->current_concentration_;
-      }
-    }
-  }
+	for (auto delta : delta_concentration) {
+		delta.second -= Common::Protein_Degradation_Rate * protein_list_map_[delta.first]->concentration_;
+		delta.second *= 1 / (Common::Protein_Degradation_Step);
 
-  for (auto delta : delta_concentration) {
-    delta.second -= Common::Protein_Degradation_Rate * protein_list_map_[delta.first]->concentration_;
-    delta.second *= 1/(Common::Protein_Degradation_Step);
-
-    protein_list_map_[delta.first]->concentration_+=delta.second;
-  }
+		protein_list_map_[delta.first]->concentration_ += delta.second;
+	}
 }
 
 bool Organism::dying_or_not() {
