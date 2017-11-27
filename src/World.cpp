@@ -114,7 +114,7 @@ void World::run_evolution() {
 #if WITH_GRAPHICS_CONTEXT
   GraphicDisplay* display = new GraphicDisplay(this);
 #endif
-  while (time_ < Common::Number_Evolution_Step) {
+  while (time_ < NUMBER_EVOLUTION_STEPS) {
     evolution_step();
     int living_one = 0;
     for (int i = 0; i < width_; i++) {
