@@ -4,12 +4,16 @@
 
 using namespace std;
 
+// These defined constants may be changed at compile time
+#define SEED 897685687
+#define WORLD_SIZE 32
+
 int main() {
   printf("Init binding matrix\n");
-  Common::init_binding_matrix(897685687);
+  Common::init_binding_matrix(SEED);
 
   printf("Create World\n");
-  World* world = new World(32, 32, 897986875);
+  World* world = new World(WORLD_SIZE, WORLD_SIZE, SEED);
 
   printf("Initialize environment\n");
   world->init_environment();
