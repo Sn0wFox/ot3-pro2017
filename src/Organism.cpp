@@ -105,13 +105,12 @@ void Organism::translate_protein() {
             protein_antipoison_list_.push_back(prot);
           }
 
-          rna_produce_protein_[rna_id][current_value] = prot;
         } else {
           protein_list_map_[current_value]->concentration_+=(*it)->concentration_base_;
           delete prot;
-          rna_produce_protein_[rna_id][current_value] = protein_list_map_[current_value];
         }
 
+        rna_produce_protein_.push_back(current_value);
       }
     }
     rna_id++;
@@ -263,13 +262,11 @@ void Organism::compute_protein_concentration() {
   }
 
   std::unordered_map<float,float> delta_concentration;
-  for (auto rna : rna_produce_protein_) {
-    for (auto prot : rna_produce_protein_[rna.first]) {
-      if (delta_concentration.find(prot.first) == delta_concentration.end()) {
-        delta_concentration[prot.first] = rna_list_[rna.first]->current_concentration_;
-      } else {
-        delta_concentration[prot.first] += rna_list_[rna.first]->current_concentration_;
-      }
+  for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
+    if (delta_concentration.find(rna_produce_protein_[rna_id]) == delta_concentration.end()) {
+      delta_concentration[rna_produce_protein_[rna_id]] = rna_list_[rna_id]->current_concentration_;
+    } else {
+      delta_concentration[rna_produce_protein_[rna_id]] += rna_list_[rna_id]->current_concentration_;
     }
   }
 
