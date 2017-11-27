@@ -66,11 +66,11 @@ class Organism {
     void try_to_move();
     void compute_fitness();
 
-	void part_1();
+	void current_concentration_compute();
 
 	void compute_protein_concentration();
 
-	void part_2();
+	void delta_concentration_compute();
 
     Organism* divide();
 };
