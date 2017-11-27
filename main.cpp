@@ -14,14 +14,10 @@ int main() {
   printf("Initialize environment\n");
   world->init_environment();
 
-  bool test = false;
-  if (test) {
-    world->test_mutate();
-  } else {
-    printf("Initialize random population\n");
-    world->random_population();
+	printf("Initialize random population\n");
+	world->random_population();
 
-    printf("Run evolution\n");
-    world->run_evolution();
-  }
+	printf("Run evolution\n");
+	world->run_evolution();
+
 }
