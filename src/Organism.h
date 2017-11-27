@@ -27,7 +27,6 @@ class Organism {
 
     DNA* dna_;
     std::vector<RNA*> rna_list_;
-    //std::unordered_map<int,std::unordered_map<float,Protein*>> rna_produce_protein_;
     std::vector<float> rna_produce_protein_;
 
     std::vector<Protein*> protein_fitness_list_;
@@ -36,6 +35,7 @@ class Organism {
     std::vector<Protein*> protein_antipoison_list_;
 
     std::unordered_map<float,Protein*> protein_list_map_;
+    
 
     std::vector<Pump*> pump_list_;
     std::vector<Move*> move_list_;

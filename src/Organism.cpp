@@ -261,20 +261,11 @@ void Organism::compute_protein_concentration() {
     rna_id++;
   }
 
-  std::unordered_map<float,float> delta_concentration;
   for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
-    if (delta_concentration.find(rna_produce_protein_[rna_id]) == delta_concentration.end()) {
-      delta_concentration[rna_produce_protein_[rna_id]] = rna_list_[rna_id]->current_concentration_;
-    } else {
-      delta_concentration[rna_produce_protein_[rna_id]] += rna_list_[rna_id]->current_concentration_;
-    }
-  }
+    rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
+    rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
 
-  for (auto delta : delta_concentration) {
-    delta.second -= Common::Protein_Degradation_Rate * protein_list_map_[delta.first]->concentration_;
-    delta.second *= 1/(Common::Protein_Degradation_Step);
-
-    protein_list_map_[delta.first]->concentration_+=delta.second;
+    protein_list_map_[rna_produce_protein_[rna_id]]->concentration_+=rna_list_[rna_id]->current_concentration_;
   }
 }
 
