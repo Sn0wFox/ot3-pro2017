@@ -76,7 +76,6 @@ void World::random_population() {
     }
     printf(".");
     delete dna;
-    //if (i%100==0) printf(".");
     i++;
   }
 
@@ -169,16 +168,7 @@ void World::evolution_step() {
       }
     }
   }
-/*
-  printf("Move\n");
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
-        grid_cell_[i * width_ + j]->organism_->try_to_move();
-      }
-    }
-  }
-*/
+
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
       if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
@@ -265,7 +255,6 @@ void World::test_mutate() {
     fitness = org->fitness_;
     printf(".");
     delete dna;
-    //if (i%100==0) printf(".");
     i++;
   }
 
