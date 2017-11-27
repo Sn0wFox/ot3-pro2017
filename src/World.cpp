@@ -61,7 +61,6 @@ void World::random_population() {
 
   long i = 0;
   while (fitness <= 0.0) {
-    delete org;
     dna = new DNA(grid_cell_[0]);
     org = new Organism(new DNA(dna));
     org->gridcell_ = grid_cell_[0];
@@ -73,6 +72,7 @@ void World::random_population() {
     fitness = org->fitness_;
     if (org->dying_or_not()) {
       fitness = 0;
+      delete org;
     }
     printf(".");
     delete dna;
