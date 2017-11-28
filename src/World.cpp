@@ -142,96 +142,28 @@ void World::run_evolution() {
 }
 
 void World::evolution_step() {
-  death_=0;
-  new_mutant_=0;
 
+  // Reset stats
+  death_= 0;
+  new_mutant_= 0;
   min_fitness_ = 1;
   max_fitness_ = 0;
 
-  Organism* best;
+  // For each cell in the grid,
+  // let the organisms live or die
+  step_live_or_die();
 
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
-        grid_cell_[i * width_ + j]->organism_->activate_pump();
-        grid_cell_[i * width_ + j]->organism_->build_regulation_network();
+  // For each cell in the UPDATED grid,
+  // compute the fitness and update the best and the worst (stats)
+  step_compute_fitness();
 
-        for (int t = 0; t < Common::Number_Degradation_Step; t++)
-          grid_cell_[i * width_ +
-                     j]->organism_->compute_protein_concentration();
+  // For each cell in the NEWLY UPDATED grid,
+  // let the best organisms reproduce
+  step_reproduce();
 
-        if (grid_cell_[i * width_ + j]->organism_->dying_or_not()) {
-          delete grid_cell_[i * width_ + j]->organism_;
-          grid_cell_[i * width_ + j]->organism_ = nullptr;
-          death_++;
-        }
-      }
-    }
-  }
-
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
-
-        grid_cell_[i * width_ + j]->organism_->compute_fitness();
-
-        max_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ >
-                       max_fitness_ ? grid_cell_[i * width_ +
-                                                 j]->organism_->fitness_
-                                    : max_fitness_;
-        min_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ <
-                       min_fitness_ ? grid_cell_[i * width_ +
-                                                 j]->organism_->fitness_
-                                    : min_fitness_;
-      }
-    }
-  }
-
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-
-      if (grid_cell_[i * width_ + j]->organism_ == nullptr) {
-        Organism* org_n = nullptr;
-
-        for (int x = i - Common::Duplicate_Neighbors_Offset;
-             x <= i + Common::Duplicate_Neighbors_Offset; x++) {
-          for (int y = j - Common::Duplicate_Neighbors_Offset;
-               y <= j + Common::Duplicate_Neighbors_Offset; y++) {
-            if (x >= 0 && x < width_)
-              if (y >= 0 && y < height_) {
-                if (grid_cell_[x * width_ + y]->organism_ != nullptr) {
-                  if (org_n != nullptr)
-                    org_n = grid_cell_[x * width_ + y]->organism_->fitness_ <
-                          org_n->fitness_ ? grid_cell_[x * width_ +
-                                                       y]->organism_
-                                          : org_n;
-                  else
-                    org_n = grid_cell_[x * width_ + y]->organism_;
-                }
-              }
-          }
-        }
-
-        if (org_n != nullptr) {
-          new_mutant_++;
-          org_n->dupli_success_++;
-          grid_cell_[i * width_ + j]->organism_ = new Organism(new DNA(org_n->dna_));
-          grid_cell_[i * width_ + j]->organism_->gridcell_ = grid_cell_[
-              i * width_ + j];
-          grid_cell_[i * width_ + j]->organism_->mutate();
-          grid_cell_[i * width_ + j]->organism_->init_organism();
-        }
-      }
-    }
-  }
-
-
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-      grid_cell_[i * width_ + j]->diffuse_protein();
-      grid_cell_[i * width_ + j]->degrade_protein();
-    }
-  }
+  // For each cell of the ONCE AGAIN UPDATED grid,
+  // diffuse and degrade proteins
+  step_diffuse_degrade_proteins();
 }
 
 void World::test_mutate() {
@@ -404,5 +336,98 @@ void World::stats() {
 }
 
 
+// -------------- Protected methods
 
 
+void World::step_live_or_die() {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_; j++) {
+      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
+
+        // Feed it
+        grid_cell_[i * width_ + j]->organism_->activate_pump();
+        grid_cell_[i * width_ + j]->organism_->build_regulation_network();
+
+        for (int t = 0; t < Common::Number_Degradation_Step; t++) {
+          // TODO: that's the critical call; enhance it
+          grid_cell_[i * width_ + j]->organism_->compute_protein_concentration();
+        }
+
+        // Ensure the organism is healthy
+        if (grid_cell_[i * width_ + j]->organism_->dying_or_not()) {
+          // Oops, it's not ! It just died, so we remove it
+          delete grid_cell_[i * width_ + j]->organism_;
+          grid_cell_[i * width_ + j]->organism_ = nullptr;
+          death_++;
+        }
+      }
+    }
+  }
+}
+
+void World::step_compute_fitness() {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_; j++) {
+      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
+
+        grid_cell_[i * width_ + j]->organism_->compute_fitness();
+
+        max_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ > max_fitness_
+          ? grid_cell_[i * width_ + j]->organism_->fitness_
+          : max_fitness_;
+
+        min_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ < min_fitness_
+          ? grid_cell_[i * width_ + j]->organism_->fitness_
+          : min_fitness_;
+      }
+    }
+  }
+}
+
+void World::step_reproduce() {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_; j++) {
+
+      if (grid_cell_[i * width_ + j]->organism_ == nullptr) {
+        Organism* org_n = nullptr;
+
+        for (int x = i - Common::Duplicate_Neighbors_Offset; x <= i + Common::Duplicate_Neighbors_Offset; x++) {
+          for (int y = j - Common::Duplicate_Neighbors_Offset; y <= j + Common::Duplicate_Neighbors_Offset; y++) {
+            if (x >= 0 && x < width_) {
+              if (y >= 0 && y < height_) {
+                if (grid_cell_[x * width_ + y]->organism_ != nullptr) {
+                  if (org_n != nullptr) {
+                    org_n = grid_cell_[x * width_ + y]->organism_->fitness_ < org_n->fitness_
+                      ? grid_cell_[x * width_ + y]->organism_
+                      : org_n;
+                  }
+                  else {
+                    org_n = grid_cell_[x * width_ + y]->organism_;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (org_n != nullptr) {
+          new_mutant_++;
+          org_n->dupli_success_++;
+          grid_cell_[i * width_ + j]->organism_ = new Organism(new DNA(org_n->dna_));
+          grid_cell_[i * width_ + j]->organism_->gridcell_ = grid_cell_[i * width_ + j];
+          grid_cell_[i * width_ + j]->organism_->mutate();
+          grid_cell_[i * width_ + j]->organism_->init_organism();
+        }
+      }
+    }
+  }
+}
+
+void World::step_diffuse_degrade_proteins() {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_; j++) {
+      grid_cell_[i * width_ + j]->diffuse_protein();
+      grid_cell_[i * width_ + j]->degrade_protein();
+    }
+  }
+}
