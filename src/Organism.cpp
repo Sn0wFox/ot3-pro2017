@@ -90,29 +90,19 @@ void Organism::translate_protein() {
         Protein* prot = new Protein(type,binding_pattern,current_value);
         prot->concentration_ = (*it)->concentration_base_;
 
+        protein_list_map_[current_value] = prot;
 
-
-        if ( protein_list_map_.find(current_value) == protein_list_map_.end() ) {
-          protein_list_map_[current_value] = prot;
-
-
-          if (type == (int) Protein::Protein_Type::FITNESS) {
-            protein_fitness_list_.push_back(prot);
-          } else if (type == (int) Protein::Protein_Type::TF) {
-            protein_TF_list_.push_back(prot);
-          } else if (type == (int) Protein::Protein_Type::POISON) {
-            protein_poison_list_.push_back(prot);
-          } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
-            protein_antipoison_list_.push_back(prot);
-          }
-
-          rna_produce_protein_[rna_id][current_value] = prot;
-        } else {
-          protein_list_map_[current_value]->concentration_+=(*it)->concentration_base_;
-          delete prot;
-          rna_produce_protein_[rna_id][current_value] = protein_list_map_[current_value];
+        if (type == (int) Protein::Protein_Type::FITNESS) {
+          protein_fitness_list_.push_back(prot);
+        } else if (type == (int) Protein::Protein_Type::TF) {
+          protein_TF_list_.push_back(prot);
+        } else if (type == (int) Protein::Protein_Type::POISON) {
+          protein_poison_list_.push_back(prot);
+        } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
+          protein_antipoison_list_.push_back(prot);
         }
 
+        rna_produce_protein_.push_back(current_value);
       }
     }
     rna_id++;
@@ -174,16 +164,10 @@ void Organism::build_regulation_network() {
     for ( auto it_j = protein_fitness_list_.begin(); it_j != protein_fitness_list_.end(); it_j++ ) {
       int index_i = (*it)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
       int index_j = (*it_j)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-      if (Common::matrix_binding_[index_i*Common::BINDING_MATRIX_SIZE+index_j] != 0) {
-        rna_influence_[rna_id][(*it_j)->value_] = Common::matrix_binding_[index_i*Common::BINDING_MATRIX_SIZE+index_j];
-      }
     }
     for ( auto it_j = protein_TF_list_.begin(); it_j != protein_TF_list_.end(); it_j++ ) {
       int index_i = rna_list_[rna_id]->binding_pattern_*Common::BINDING_MATRIX_SIZE;
       int index_j =  (*it_j)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-      if (Common::matrix_binding_[index_i*Common::BINDING_MATRIX_SIZE+index_j] != 0) {
-        rna_influence_[rna_id][(*it_j)->value_] = Common::matrix_binding_[index_i*Common::BINDING_MATRIX_SIZE+index_j];
-      }
     }
     rna_id++;
   }
@@ -255,27 +239,20 @@ void Organism::init_organism() {
 void Organism::current_concentration_compute()
 {
 	int rna_id = 0;
-	for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
-		float delta_pos = 0, delta_neg = 0;
-		for (auto prot : rna_influence_[rna_id]) {
-			if (prot.second > 0)
-				delta_pos += prot.second * protein_list_map_[prot.first]->concentration_;
-			else
-				delta_neg -= prot.second * protein_list_map_[prot.first]->concentration_;
-		}
-
-		float delta_pos_pow_n = pow(delta_pos, Common::hill_shape_n);
-		float delta_neg_pow_n = pow(delta_neg, Common::hill_shape_n);
+  for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
+    float delta_pos = 0, delta_neg = 0;
+    float delta_pos_pow_n = pow(delta_pos,Common::hill_shape_n);
+    float delta_neg_pow_n = pow(delta_neg,Common::hill_shape_n);
 
 		// [P] ------- Paralellizable ???
 
 		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
-			* (Common::hill_shape
-				/ (delta_neg_pow_n + Common::hill_shape))
-			* (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
-				* (delta_pos_pow_n /
-				(delta_pos_pow_n +
-					Common::hill_shape)));
+                               * (Common::hill_shape
+                                  / (delta_neg_pow_n + Common::hill_shape))
+                               * (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
+                                      * (delta_pos_pow_n /
+                                         (delta_pos_pow_n +
+                                             Common::hill_shape)));
 
 		// -------------------------
 		rna_id++;
@@ -290,24 +267,12 @@ void Organism::compute_protein_concentration() {
 
 void Organism::delta_concentration_compute()
 {
-	std::map<float, float> delta_concentration;
-	for (auto rna : rna_produce_protein_) {
-		for (auto prot : rna.second) {
-			if (delta_concentration.find(prot.first) == delta_concentration.end()) {
-				delta_concentration[prot.first] = rna_list_[rna.first]->current_concentration_;
-			}
-			else {
-				delta_concentration[prot.first] += rna_list_[rna.first]->current_concentration_;
-			}
-		}
-	}
+	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
+    rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
+    rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
 
-	for (auto delta : delta_concentration) {
-		delta.second -= Common::Protein_Degradation_Rate * protein_list_map_[delta.first]->concentration_;
-		delta.second *= 1 / (Common::Protein_Degradation_Step);
-
-		protein_list_map_[delta.first]->concentration_ += delta.second;
-	}
+    protein_list_map_[rna_produce_protein_[rna_id]]->concentration_+=rna_list_[rna_id]->current_concentration_;
+  }
 }
 
 bool Organism::dying_or_not() {
@@ -520,7 +485,6 @@ Organism::~Organism() {
   delete dna_;
 
 
-  rna_influence_.clear();
   rna_produce_protein_.clear();
 
   for (auto prot : protein_list_map_) {

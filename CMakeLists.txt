@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-#cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project(pdc_evol_model LANGUAGES CXX CUDA)
+project(pdc_evol_model)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 
