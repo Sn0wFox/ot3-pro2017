@@ -7,6 +7,7 @@
 
 
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include "Move.h"
 #include "Pump.h"
@@ -57,22 +58,22 @@ class Organism {
     void build_regulation_network();
     void translate_pump();
     void translate_move();
-
     void mutate();
-
     void activate_pump();
     void compute_next_step();
     bool dying_or_not();
     void try_to_move();
     void compute_fitness();
 
-	void current_concentration_compute();
-
-	void compute_protein_concentration();
-
-	void delta_concentration_compute();
+	  void current_concentration_compute();
+	  void compute_protein_concentration();
+	  void delta_concentration_compute();
 
     Organism* divide();
+
+  protected:
+    void compute_delta_concentration(std::map<float, float>& map_to_fill);
+    void compute_delta_protein_concentration(std::map<float, float>& delta_map);
 };
 
 #endif //PDC_EVOL_MODEL_ORGANISM_H

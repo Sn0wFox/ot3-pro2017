@@ -115,7 +115,10 @@ void World::run_evolution() {
   GraphicDisplay* display = new GraphicDisplay(this);
 #endif
   while (time_ < NUMBER_EVOLUTION_STEPS) {
+	// Execute a step
     evolution_step();
+
+	// Count the total amount of living organisms
     int living_one = 0;
     for (int i = 0; i < width_; i++) {
       for (int j = 0; j < height_; j++) {
@@ -129,7 +132,10 @@ void World::run_evolution() {
     display->display();
 #endif
     
+	// Compute stats
     stats();
+
+	// Show results to the user
     if (time_%Common::LOG_STEPS == 0) {
       printf(
           "Evolution at step %d -- Number of Organism %d  (Dead: %d -- Mutant: %d)-- Min Fitness: %f -- Max Fitness: %f\n",
@@ -340,10 +346,12 @@ void World::stats() {
 
 
 void World::step_live_or_die() {
+  // For each cell in the grid
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
+      // If there's a living organism
       if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
-
+  
         // Feed it
         grid_cell_[i * width_ + j]->organism_->activate_pump();
         grid_cell_[i * width_ + j]->organism_->build_regulation_network();
