@@ -24,4 +24,6 @@ int main() {
 	printf("Run evolution\n");
 	world->run_evolution();
 
+  // Allows to put a breakpoint easily once everything is done
+  getchar();
 }

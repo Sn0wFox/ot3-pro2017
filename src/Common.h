@@ -5,6 +5,7 @@
 #ifndef PDC_EVOL_MODEL_COMMON_H
 #define PDC_EVOL_MODEL_COMMON_H
 
+#define NUMBER_EVOLUTION_STEPS 345
 
 #include "BP_Protein.h"
 

@@ -5,6 +5,7 @@
 #include "Organism.h"
 #include "DNA.h"
 #include "Common.h"
+#include <map>
 
 
 void Organism::translate_RNA() {
@@ -235,24 +236,38 @@ void Organism::init_organism() {
   translate_move();
 }
 
-void Organism::compute_protein_concentration() {
-  int rna_id = 0;
+void Organism::current_concentration_compute()
+{
+	int rna_id = 0;
   for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
     float delta_pos = 0, delta_neg = 0;
     float delta_pos_pow_n = pow(delta_pos,Common::hill_shape_n);
     float delta_neg_pow_n = pow(delta_neg,Common::hill_shape_n);
 
-     rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
+		// [P] ------- Paralellizable ???
+
+		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
                                * (Common::hill_shape
                                   / (delta_neg_pow_n + Common::hill_shape))
                                * (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
                                       * (delta_pos_pow_n /
                                          (delta_pos_pow_n +
                                              Common::hill_shape)));
-    rna_id++;
-  }
 
-  for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
+		// -------------------------
+		rna_id++;
+	}
+}
+
+void Organism::compute_protein_concentration() {
+	current_concentration_compute();
+
+	delta_concentration_compute();
+}
+
+void Organism::delta_concentration_compute()
+{
+	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
     rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
     rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
 
