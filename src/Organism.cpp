@@ -291,8 +291,8 @@ void Organism::compute_protein_concentration() {
 void Organism::delta_concentration_compute()
 {
 	std::map<float, float> delta_concentration;
-	for (auto rna : rna_produce_protein_) {
-		for (auto prot : rna.second) {
+	for (auto & rna : rna_produce_protein_) {
+		for (auto & prot : rna.second) {
 			if (delta_concentration.find(prot.first) == delta_concentration.end()) {
 				delta_concentration[prot.first] = rna_list_[rna.first]->current_concentration_;
 			}
@@ -302,7 +302,7 @@ void Organism::delta_concentration_compute()
 		}
 	}
 
-	for (auto delta : delta_concentration) {
+	for (auto & delta : delta_concentration) {
 		delta.second -= Common::Protein_Degradation_Rate * protein_list_map_[delta.first]->concentration_;
 		delta.second *= 1 / (Common::Protein_Degradation_Step);
 
