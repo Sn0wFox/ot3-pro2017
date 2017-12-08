@@ -181,8 +181,6 @@ void Organism::compute_next_step() {
   compute_protein_concentration();
 }
 
-
-
 void Organism::activate_pump() {
   for (auto it = pump_list_.begin(); it != pump_list_.end(); it++) {
     if ((*it)->in_out_) {
@@ -236,8 +234,12 @@ void Organism::init_organism() {
   translate_move();
 }
 
-void Organism::current_concentration_compute()
-{
+void Organism::compute_protein_concentration() {
+	current_concentration_compute();
+	delta_concentration_compute();
+}
+
+void Organism::current_concentration_compute() {
 	int rna_id = 0;
   for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
 
@@ -250,14 +252,8 @@ void Organism::current_concentration_compute()
 	}
 }
 
-void Organism::compute_protein_concentration() {
-	current_concentration_compute();
-
-	delta_concentration_compute();
-}
-
-void Organism::delta_concentration_compute()
-{
+// TODO: the critical call everyone !
+void Organism::delta_concentration_compute() {
 	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
     rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
     rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
@@ -454,9 +450,6 @@ Organism* Organism::divide() {
   Organism* new_org = new Organism(this);
   return new_org;
 }
-
-
-
 
 Organism::Organism(Organism* organism) {
   dna_ = new DNA(organism->dna_);

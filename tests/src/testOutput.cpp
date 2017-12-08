@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string> 
 
+void removeLineBreaks (std::string str);
+
 /* arg[0]: reference output
  * arg[1]: output to test
 */
@@ -21,8 +23,12 @@ int main(int argc, char* argv[]) {
         {
             lineCount++;
 
+            removeLineBreaks(referenceLine);
+            removeLineBreaks(testLine);
+
             if(testLine.compare(referenceLine) != 0)
             {
+                
                 if(testLine.compare("") == 0 || referenceLine.compare("") == 0)
                     std::cout << "ERREUR : Les deux fichiers n'ont pas la même longueur" << lineCount << std::endl;
                 else
@@ -49,4 +55,14 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl << std::endl << "LE RESULTAT EST CORRECT" << std::endl << std::endl;
     }
     return 0;
+}
+
+void removeLineBreaks (std::string str)
+{
+    while ( str.find ("\r\n") != std::string::npos )
+    {
+        str.erase ( str.find ("\r\n"));
+        str.erase ( str.find ("\n"));
+        str.erase ( str.find ("\r"));
+    }
 }
