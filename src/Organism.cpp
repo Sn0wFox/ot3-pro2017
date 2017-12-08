@@ -240,16 +240,7 @@ void Organism::compute_protein_concentration() {
 }
 
 void Organism::current_concentration_compute() {
-	int rna_id = 0;
-  for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
-
-		// [P] ------- Paralellizable ???
-
-		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_;
-
-		// -------------------------
-		rna_id++;
-	}
+	rna_list_[0]->current_concentration_ = rna_list_[0]->concentration_base_;
 }
 
 // TODO: the critical call everyone !
