@@ -240,19 +240,10 @@ void Organism::current_concentration_compute()
 {
 	int rna_id = 0;
   for (auto it = rna_list_.begin(); it != rna_list_.end(); it++) {
-    float delta_pos = 0, delta_neg = 0;
-    float delta_pos_pow_n = pow(delta_pos,Common::hill_shape_n);
-    float delta_neg_pow_n = pow(delta_neg,Common::hill_shape_n);
 
 		// [P] ------- Paralellizable ???
 
-		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_
-                               * (Common::hill_shape
-                                  / (delta_neg_pow_n + Common::hill_shape))
-                               * (1 + ((1 / rna_list_[rna_id]->concentration_base_) - 1)
-                                      * (delta_pos_pow_n /
-                                         (delta_pos_pow_n +
-                                             Common::hill_shape)));
+		rna_list_[rna_id]->current_concentration_ = rna_list_[rna_id]->concentration_base_;
 
 		// -------------------------
 		rna_id++;
