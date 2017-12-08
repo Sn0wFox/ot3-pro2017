@@ -309,7 +309,7 @@ void World::stats() {
 
   statfile_mean_<<time_<<","<<avg_fitness<<","<<
                                avg_meta_error<<","<<
-                               avg_dna_size<<","<<
+                               (avg_dna_size < 10e-3 ? 0 : avg_dna_size)<<","<<
                                avg_protein<<","<<
                                avg_protein_fitness<<","<<
                                avg_protein_pure_TF<<","<<
