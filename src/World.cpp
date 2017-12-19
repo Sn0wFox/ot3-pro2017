@@ -307,8 +307,6 @@ void World::stats() {
   avg_move_success/=nb_indiv;
   avg_dupli_sucess/=nb_indiv;
 
-  std::cout << avg_protein_poison << std::endl;
-
   statfile_mean_<<time_<<","<<avg_fitness<<","<<
                                avg_meta_error<<","<<
                                avg_dna_size<<","<<
@@ -320,6 +318,7 @@ void World::stats() {
                                avg_pump<<","<<
                                avg_move<<","<<
                                avg_nb_rna<<","<<
+                               avg_network_size<<","<<
                                avg_life_duration<<","<<
                                avg_move_success<<","<<
                                avg_dupli_sucess<<std::endl;

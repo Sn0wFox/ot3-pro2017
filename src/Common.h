@@ -5,7 +5,7 @@
 #ifndef PDC_EVOL_MODEL_COMMON_H
 #define PDC_EVOL_MODEL_COMMON_H
 
-#define NUMBER_EVOLUTION_STEPS 1000
+#define NUMBER_EVOLUTION_STEPS 345
 
 #include "BP_Protein.h"
 
@@ -57,7 +57,7 @@ class Common {
     constexpr static double GRADIENT_SCALE = 30;
 
     const static int Number_Degradation_Step = 10;
-    const static int Number_Evolution_Step = 1000;
+    const static int Number_Evolution_Step = 10;
 
 	const static int LOG_STEPS = 1;
 };
