@@ -57,6 +57,7 @@ class Common {
     constexpr static double GRADIENT_SCALE = 30;
 
     const static int Number_Degradation_Step = 10;
+    const static int Number_Evolution_Step = 10;
 
 	const static int LOG_STEPS = 1;
 };

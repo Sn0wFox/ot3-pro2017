@@ -28,8 +28,7 @@ class Organism {
 
     DNA* dna_;
     std::vector<RNA*> rna_list_;
-    std::unordered_map<int,std::unordered_map<float,float>> rna_influence_;
-    std::unordered_map<int,std::unordered_map<float,Protein*>> rna_produce_protein_;
+    std::vector<float> rna_produce_protein_;
 
     std::vector<Protein*> protein_fitness_list_;
     std::vector<Protein*> protein_TF_list_;
@@ -37,6 +36,7 @@ class Organism {
     std::vector<Protein*> protein_antipoison_list_;
 
     std::unordered_map<float,Protein*> protein_list_map_;
+    
 
     std::vector<Pump*> pump_list_;
     std::vector<Move*> move_list_;
@@ -70,10 +70,6 @@ class Organism {
 	  void delta_concentration_compute();
 
     Organism* divide();
-
-  protected:
-    void compute_delta_concentration(std::map<float, float>& map_to_fill);
-    void compute_delta_protein_concentration(std::map<float, float>& delta_map);
 };
 
 #endif //PDC_EVOL_MODEL_ORGANISM_H

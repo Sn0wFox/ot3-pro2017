@@ -284,7 +284,6 @@ void World::stats() {
         avg_pump+=grid_cell_[i * width_ + j]->organism_->pump_list_.size();
         avg_move+=grid_cell_[i * width_ + j]->organism_->move_list_.size();
         avg_nb_rna+=grid_cell_[i * width_ + j]->organism_->rna_list_.size();
-        avg_network_size+=grid_cell_[i * width_ + j]->organism_->rna_influence_.size();
         avg_life_duration+=grid_cell_[i * width_ + j]->organism_->life_duration_;
         avg_move_success+=grid_cell_[i * width_ + j]->organism_->move_success_;
         avg_dupli_sucess+=grid_cell_[i * width_ + j]->organism_->dupli_success_;
@@ -335,7 +334,6 @@ void World::stats() {
   best->pump_list_.size()<<","<<
   best->move_list_.size()<<","<<
   best->rna_list_.size()<<","<<
-  best->rna_influence_.size()<<","<<
   best->life_duration_<<","<<
   best->move_success_<<","<<
   best->dupli_success_<<std::endl;
