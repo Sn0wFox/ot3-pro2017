@@ -29,6 +29,7 @@
 #include "DNA.h"
 #include "Organism.h"
 #include "GraphicDisplay.h"
+#include <omp.h>
 
 
 World::World(int width, int height, uint32_t seed) {
@@ -344,6 +345,8 @@ void World::stats() {
 
 void World::step_live_or_die() {
   // For each cell in the grid
+  int local_death = death_;
+#pragma omp parallel for shared(local_death)
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
       // If there's a living organism
@@ -363,11 +366,13 @@ void World::step_live_or_die() {
           // Oops, it's not ! It just died, so we remove it
           delete grid_cell_[i * width_ + j]->organism_;
           grid_cell_[i * width_ + j]->organism_ = nullptr;
-          death_++;
+          local_death++;
         }
       }
     }
   }
+
+  death_ = local_death;
 }
 
 void World::step_compute_fitness() {
