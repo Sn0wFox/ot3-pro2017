@@ -90,16 +90,25 @@ void Organism::translate_protein() {
         Protein* prot = new Protein(type,binding_pattern,current_value);
         prot->concentration_ = (*it)->concentration_base_;
 
-        protein_list_map_[current_value] = prot;
 
-        if (type == (int) Protein::Protein_Type::FITNESS) {
-          protein_fitness_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::TF) {
-          protein_TF_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::POISON) {
-          protein_poison_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
-          protein_antipoison_list_.push_back(prot);
+
+        if ( protein_list_map_.find(current_value) == protein_list_map_.end() ) {
+          protein_list_map_[current_value] = prot;
+
+
+          if (type == (int) Protein::Protein_Type::FITNESS) {
+            protein_fitness_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::TF) {
+            protein_TF_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::POISON) {
+            protein_poison_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
+            protein_antipoison_list_.push_back(prot);
+          }
+
+        } else {
+          protein_list_map_[current_value]->concentration_+=(*it)->concentration_base_;
+          delete prot;
         }
 
         rna_produce_protein_.push_back(current_value);
@@ -235,7 +244,7 @@ void Organism::current_concentration_compute() {
 void Organism::delta_concentration_compute() {
 	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
     rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
-    rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
+    rna_list_[rna_id]->current_concentration_ *= 1.0/(Common::Protein_Degradation_Step);
 
     protein_list_map_[rna_produce_protein_[rna_id]]->concentration_+=rna_list_[rna_id]->current_concentration_;
   }
