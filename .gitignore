@@ -10,3 +10,4 @@ build/
 CMakeFiles/*
 CMakeCache.txt
 
+tests/output.txt
