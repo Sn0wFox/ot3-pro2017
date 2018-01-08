@@ -256,7 +256,7 @@ void Organism::current_concentration_compute() {
 void Organism::delta_concentration_compute() {
 	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
     rna_list_[rna_id]->current_concentration_ -= Common::Protein_Degradation_Rate * protein_list_map_[rna_produce_protein_[rna_id]]->concentration_;
-    rna_list_[rna_id]->current_concentration_ *= 1.0/(Common::Protein_Degradation_Step);
+    rna_list_[rna_id]->current_concentration_ *= 1/(Common::Protein_Degradation_Step);
 
     protein_list_map_[rna_produce_protein_[rna_id]]->concentration_+=rna_list_[rna_id]->current_concentration_;
   }
