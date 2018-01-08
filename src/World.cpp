@@ -318,7 +318,6 @@ void World::stats() {
                                avg_pump<<","<<
                                avg_move<<","<<
                                avg_nb_rna<<","<<
-                               avg_network_size<<","<<
                                avg_life_duration<<","<<
                                avg_move_success<<","<<
                                avg_dupli_sucess<<std::endl;
