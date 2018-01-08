@@ -11,3 +11,4 @@ tests/src/testOutput.exe
 CMakeFiles/*
 CMakeCache.txt
 
+tests/output.txt
