@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "src/World.h"
 #include "src/Common.h"
 #include <omp.h>
@@ -35,14 +36,17 @@ int main(int argc, char * argv[]) {
   printf("Initialize environment\n");
   world->init_environment();
 
-  bool test = false;
-  if (test) {
-    world->test_mutate();
-  } else {
-    printf("Initialize random population\n");
-    world->random_population();
+	printf("Initialize random population\n");
+	world->random_population();
 
-    printf("Run evolution\n");
-    world->run_evolution();
-  }
+	auto start = std::chrono::high_resolution_clock::now();
+	printf("Run evolution\n");
+	world->run_evolution();
+	auto end = std::chrono::high_resolution_clock::now();
+	auto diff = chrono::duration_cast<chrono::milliseconds>(end - start);
+	
+	std::cout << "Time taken : " << (float)diff.count() / 1000.0f << std::endl;
+
+  // Allows to put a breakpoint easily once everything is done
+  getchar();
 }
