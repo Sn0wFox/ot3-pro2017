@@ -6,6 +6,7 @@
 #include "DNA.h"
 #include "Common.h"
 #include <map>
+#include <iostream>
 
 void Organism::translate_RNA() {
 
@@ -232,6 +233,10 @@ void Organism::compute_protein_concentration() {
 	delta_concentration_compute();
 }
 
+void Organism::current_concentration_compute() {
+	rna_list_[0]->current_concentration_ = rna_list_[0]->concentration_base_;
+}
+
 // TODO: the critical call everyone !
 void Organism::delta_concentration_compute() {
 	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
@@ -341,11 +346,14 @@ void Organism::compute_fitness() {
   }
 
   sum_metabolic_error = 0;
+
+  double _sum = 0;
+  #pragma omp parallel for reduction(+:_sum)
   for (int i = 0; i < Common::Metabolic_Error_Precision; i++) {
-    sum_metabolic_error+=std::abs(gridcell_->environment_target[i]-metabolic_error[i]);
+    _sum+=std::abs(gridcell_->environment_target[i]-metabolic_error[i]);
   }
 
-  sum_metabolic_error=sum_metabolic_error/Common::Metabolic_Error_Precision;
+  sum_metabolic_error=((float)_sum)/Common::Metabolic_Error_Precision;
 
   fitness_ = std::exp(-Common::Fitness_Selection_Pressure*sum_metabolic_error);
 }
