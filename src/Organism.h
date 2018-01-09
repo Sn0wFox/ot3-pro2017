@@ -65,9 +65,9 @@ class Organism {
     void try_to_move();
     void compute_fitness();
 
-	  void current_concentration_compute() {
+	inline void current_concentration_compute() {
 		  rna_list_[0]->current_concentration_ = rna_list_[0]->concentration_base_;
-	  }
+	}
 
 	  void compute_protein_concentration();
 	  void delta_concentration_compute();
