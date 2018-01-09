@@ -373,25 +373,30 @@ void World::step_live_or_die() {
 }
 
 void World::step_compute_fitness() {
-  for (int i = 0; i < width_; i++) {
-    for (int j = 0; j < height_; j++) {
-      if (grid_cell_[i * width_ + j]->organism_ != nullptr) {
+	float _max_fitness_ = max_fitness_;
+	float _min_fitness_ = min_fitness_;
+#pragma omp parallel for shared(_max_fitness_,_min_fitness_)
+  for (int i = 0; i < width_ * height_; i++) {
+      if (grid_cell_[i]->organism_ != nullptr) {
 
-        grid_cell_[i * width_ + j]->organism_->compute_fitness();
+        grid_cell_[i]->organism_->compute_fitness();
 
-        max_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ > max_fitness_
-          ? grid_cell_[i * width_ + j]->organism_->fitness_
-          : max_fitness_;
+        _max_fitness_ = grid_cell_[i]->organism_->fitness_ > _max_fitness_
+          ? grid_cell_[i]->organism_->fitness_
+          : _max_fitness_;
 
-        min_fitness_ = grid_cell_[i * width_ + j]->organism_->fitness_ < min_fitness_
-          ? grid_cell_[i * width_ + j]->organism_->fitness_
-          : min_fitness_;
-      }
+        _min_fitness_ = grid_cell_[i]->organism_->fitness_ < _min_fitness_
+          ? grid_cell_[i]->organism_->fitness_
+          : _min_fitness_;
     }
   }
+
+  max_fitness_ = _max_fitness_;
+  min_fitness_ = _min_fitness_;
 }
 
 void World::step_reproduce() {
+	// Pas optimisable : Dépend de l'ordre d'exécution 
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
 
