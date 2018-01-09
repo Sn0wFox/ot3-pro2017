@@ -7,7 +7,6 @@
 #include "Common.h"
 #include <map>
 
-
 void Organism::translate_RNA() {
 
   RNA* current_rna = nullptr;
@@ -165,21 +164,6 @@ void Organism::translate_move() {
     }
   }
 
-}
-
-void Organism::build_regulation_network() {
-  int rna_id = 0;
-  for ( auto it = rna_list_.begin(); it != rna_list_.end(); it++ ) {
-    for ( auto it_j = protein_fitness_list_.begin(); it_j != protein_fitness_list_.end(); it_j++ ) {
-      int index_i = (*it)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-      int index_j = (*it_j)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-    }
-    for ( auto it_j = protein_TF_list_.begin(); it_j != protein_TF_list_.end(); it_j++ ) {
-      int index_i = rna_list_[rna_id]->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-      int index_j =  (*it_j)->binding_pattern_*Common::BINDING_MATRIX_SIZE;
-    }
-    rna_id++;
-  }
 }
 
 void Organism::compute_next_step() {
