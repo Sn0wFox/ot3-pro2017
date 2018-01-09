@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "src/World.h"
 #include "src/Common.h"
 
@@ -22,8 +23,13 @@ int main() {
 	printf("Initialize random population\n");
 	world->random_population();
 
+	auto start = std::chrono::high_resolution_clock::now();
 	printf("Run evolution\n");
 	world->run_evolution();
+	auto end = std::chrono::high_resolution_clock::now();
+	auto diff = chrono::duration_cast<chrono::milliseconds>(end - start);
+	
+	std::cerr << "Time taken : " << (float)diff.count() / 1000.0f << std::endl;
 
   // Allows to put a breakpoint easily once everything is done
   getchar();
