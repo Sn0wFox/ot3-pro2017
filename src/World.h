@@ -18,7 +18,7 @@ class GridCell;
 
 class World {
   public:
-    World(int width, int height, uint32_t seed);
+    World(int width, int height, uint32_t seed, int num_steps);
     ~World() { statfile_best_.close(); statfile_mean_.close(); }
 
     int   width_;
@@ -27,6 +27,7 @@ class World {
     int   death_;
     int   new_mutant_;
     float min_fitness_, max_fitness_;
+	int num_steps;
 
     uint32_t      global_seed_;
     GridCell**    grid_cell_;

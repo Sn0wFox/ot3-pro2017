@@ -31,10 +31,11 @@
 #include "GraphicDisplay.h"
 
 
-World::World(int width, int height, uint32_t seed) {
+World::World(int width, int height, uint32_t seed, int num_steps) {
   width_ = width;
   height_ = height;
   time_ = 0;
+  this->num_steps = num_steps;
 
   grid_cell_ = new GridCell*[width*height];
 
@@ -113,7 +114,7 @@ void World::run_evolution() {
 #if WITH_GRAPHICS_CONTEXT
   GraphicDisplay* display = new GraphicDisplay(this);
 #endif
-  while (time_ < NUMBER_EVOLUTION_STEPS) {
+  while (time_ < num_steps) {
 	// Execute a step
     evolution_step();
 
