@@ -24,6 +24,13 @@ class World {
 
     int width_;
     int height_;
+    int   width_;
+    int   height_;
+    int   time_;
+    int   death_;
+    int   new_mutant_;
+    float min_fitness_, max_fitness_;
+	  int num_steps;
 
     uint32_t global_seed_;
     std::mt19937 global_gen_;
@@ -31,7 +38,7 @@ class World {
 
     GridCell** grid_cell_;
     int time_;
-	int num_steps;
+	  int num_steps;
     float min_fitness_,max_fitness_;
     int death_;
     int new_mutant_;
