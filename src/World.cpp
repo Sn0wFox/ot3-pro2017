@@ -32,10 +32,11 @@
 #include <omp.h>
 
 
-World::World(int width, int height, uint32_t seed) {
+World::World(int width, int height, uint32_t seed, int num_steps) {
   width_ = width;
   height_ = height;
   time_ = 0;
+  this->num_steps = num_steps;
 
   grid_cell_ = new GridCell*[width*height];
 
@@ -66,7 +67,6 @@ void World::random_population() {
     org = new Organism(new DNA(dna));
     org->gridcell_ = grid_cell_[0];
     org->init_organism();
-    org->build_regulation_network();
     for (int t = 0; t < Common::Number_Degradation_Step; t++)
       org->compute_protein_concentration();
     org->compute_fitness();
@@ -115,7 +115,7 @@ void World::run_evolution() {
 #if WITH_GRAPHICS_CONTEXT
   GraphicDisplay* display = new GraphicDisplay(this);
 #endif
-  while (time_ < NUMBER_EVOLUTION_STEPS) {
+  while (time_ < num_steps) {
 	// Execute a step
     evolution_step();
 
@@ -187,7 +187,6 @@ void World::test_mutate() {
     org = new Organism(new DNA(dna));
     org->gridcell_ = grid_cell_[0];
     org->init_organism();
-    org->build_regulation_network();
     for (int t = 0; t < Common::Number_Degradation_Step; t++)
       org->compute_protein_concentration();
     org->compute_fitness();
@@ -218,7 +217,6 @@ void World::test_mutate() {
     org_new->mutate();
     org_new->init_organism();
     org_new->activate_pump();
-    org_new->build_regulation_network();
 
     for (int t = 0; t < Common::Number_Degradation_Step; t++)
       org_new->compute_protein_concentration();
@@ -354,7 +352,6 @@ void World::step_live_or_die() {
   
         // Feed it
         grid_cell_[i * width_ + j]->organism_->activate_pump();
-        grid_cell_[i * width_ + j]->organism_->build_regulation_network();
 
         for (int t = 0; t < Common::Number_Degradation_Step; t++) {
           // TODO: that's the critical call; enhance it
