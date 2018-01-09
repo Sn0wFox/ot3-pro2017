@@ -16,8 +16,8 @@
 class GridCell;
 
 class World {
- public:
-    World(int width, int height, uint32_t seed);
+  public:
+    World(int width, int height, uint32_t seed, int num_steps);
     ~World() { statfile_best_.close(); statfile_mean_.close(); }
     void random_population();
     void test_mutate();
@@ -30,9 +30,8 @@ class World {
 
 
     GridCell** grid_cell_;
-
     int time_;
-
+	int num_steps;
     float min_fitness_,max_fitness_;
     int death_;
     int new_mutant_;
