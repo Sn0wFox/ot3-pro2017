@@ -232,10 +232,6 @@ void Organism::compute_protein_concentration() {
 	delta_concentration_compute();
 }
 
-void Organism::current_concentration_compute() {
-	rna_list_[0]->current_concentration_ = rna_list_[0]->concentration_base_;
-}
-
 // TODO: the critical call everyone !
 void Organism::delta_concentration_compute() {
 	for (int rna_id = 0; rna_id < rna_produce_protein_.size(); rna_id++) {
