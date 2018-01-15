@@ -49,7 +49,4 @@ int main(int argc, char * argv[]) {
 	auto diff = chrono::duration_cast<chrono::milliseconds>(end - start);
 	
 	std::cerr << "Time taken : " << (float)diff.count() / 1000.0f << std::endl;
-
-  // Allows to put a breakpoint easily once everything is done
-  getchar();
 }
