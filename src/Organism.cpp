@@ -90,16 +90,25 @@ void Organism::translate_protein() {
         Protein* prot = new Protein(type,binding_pattern,current_value);
         prot->concentration_ = (*it)->concentration_base_;
 
-        protein_list_map_[current_value] = prot;
 
-        if (type == (int) Protein::Protein_Type::FITNESS) {
-          protein_fitness_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::TF) {
-          protein_TF_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::POISON) {
-          protein_poison_list_.push_back(prot);
-        } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
-          protein_antipoison_list_.push_back(prot);
+
+        if ( protein_list_map_.find(current_value) == protein_list_map_.end() ) {
+          protein_list_map_[current_value] = prot;
+
+
+          if (type == (int) Protein::Protein_Type::FITNESS) {
+            protein_fitness_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::TF) {
+            protein_TF_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::POISON) {
+            protein_poison_list_.push_back(prot);
+          } else if (type == (int) Protein::Protein_Type::ANTIPOISON) {
+            protein_antipoison_list_.push_back(prot);
+          }
+
+        } else {
+          protein_list_map_[current_value]->concentration_+=(*it)->concentration_base_;
+          delete prot;
         }
 
         rna_produce_protein_.push_back(current_value);
@@ -185,41 +194,29 @@ void Organism::activate_pump() {
   for (auto it = pump_list_.begin(); it != pump_list_.end(); it++) {
     if ((*it)->in_out_) {
       for (auto prot : protein_list_map_) {
-        if ((*it)->start_range_ >= prot.second->value_ &&
-            (*it)->end_range_ <= prot.second->value_) {
-          float remove =
-              prot.second->concentration_*((*it)->speed_/100);
-          prot.second->concentration_-=remove;
-          if ( gridcell_->protein_list_map_.find(prot.second->value_)
-               == gridcell_->protein_list_map_.end() ) {
-            Protein* prot_n = new Protein(prot.second->type_,
-                                        prot.second->binding_pattern_,
-                                          prot.second->value_);
+        if ((*it)->start_range_ >= prot.second->value_ && (*it)->end_range_ <= prot.second->value_) {
+          float remove = prot.second->concentration_*((*it)->speed_/100);
+          prot.second->concentration_ -= remove;
+          if ( gridcell_->protein_list_map_.find(prot.second->value_) == gridcell_->protein_list_map_.end() ) {
+            Protein* prot_n = new Protein(prot.second->type_, prot.second->binding_pattern_, prot.second->value_);
             prot_n->concentration_ = remove;
             gridcell_->protein_list_map_[prot.second->value_] = prot_n;
           } else {
-            gridcell_->protein_list_map_[prot.second->value_]
-                ->concentration_ += remove;
+            gridcell_->protein_list_map_[prot.second->value_]->concentration_ += remove;
           }
         }
       }
     } else {
       for (auto prot : gridcell_->protein_list_map_) {
-        if ((*it)->start_range_ >= prot.first &&
-            (*it)->end_range_ <= prot.first) {
-          float remove =
-              prot.second->concentration_*((*it)->speed_/100);
+        if ((*it)->start_range_ >= prot.first && (*it)->end_range_ <= prot.first) {
+          float remove = prot.second->concentration_*((*it)->speed_/100);
           prot.second->concentration_-=remove;
-          if ( protein_list_map_.find(prot.first)
-               == protein_list_map_.end() ) {
-            Protein* prot_n = new Protein(prot.second->type_,
-                                          prot.second->binding_pattern_,
-                                          prot.second->value_);
+          if ( protein_list_map_.find(prot.first) == protein_list_map_.end() ) {
+            Protein* prot_n = new Protein(prot.second->type_, prot.second->binding_pattern_, prot.second->value_);
             prot_n->concentration_ = remove;
             protein_list_map_[prot_n->value_] = prot_n;
           } else {
-            protein_list_map_[prot.first]
-                ->concentration_ += remove;
+            protein_list_map_[prot.first]->concentration_ += remove;
           }
         }
       }

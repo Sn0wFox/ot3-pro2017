@@ -318,7 +318,6 @@ void World::stats() {
                                avg_pump<<","<<
                                avg_move<<","<<
                                avg_nb_rna<<","<<
-                               avg_network_size<<","<<
                                avg_life_duration<<","<<
                                avg_move_success<<","<<
                                avg_dupli_sucess<<std::endl;
@@ -355,7 +354,6 @@ void World::step_live_or_die() {
         grid_cell_[i * width_ + j]->organism_->build_regulation_network();
 
         for (int t = 0; t < Common::Number_Degradation_Step; t++) {
-          // TODO: that's the critical call; enhance it
           grid_cell_[i * width_ + j]->organism_->compute_protein_concentration();
         }
 
