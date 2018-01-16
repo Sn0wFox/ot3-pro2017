@@ -15,22 +15,22 @@ tests_weak    = []
 size = 32
 tests_strong.append(["original_fixed", 10000, size, 1])
 for test in range(4):
-    tests_strong.append(["test_" + test, 10000, size, 1])
+    tests_strong.append(["test_" + str(test), 10000, size, 1])
 for cores in range(2, 33, 2):
     tests_strong.append(["original_fixed", 10000, size, cores])
     for test in range(4):
-        tests_strong.append(["test_" + test, 10000, size, cores])
+        tests_strong.append(["test_" + str(test), 10000, size, cores])
 
 
 size = 8
 while size <= 32:
     tests_weak.append(["original_fixed", 10000, size, 1])
     for test in range(4):
-        tests_weak.append(["test_" + test, 10000, size, 1])
+        tests_weak.append(["test_" + str(test), 10000, size, 1])
     for cores in range(2, 33, 2):
         tests_weak.append(["original_fixed", 10000, size, cores])
         for test in range(4):
-            tests_weak.append(["test_" + test, 10000, size, cores])
+            tests_weak.append(["test_" + str(test), 10000, size, cores])
     size *= 2
 
 
