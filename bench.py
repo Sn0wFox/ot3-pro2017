@@ -42,14 +42,14 @@ def main():
 
     global report_name
     report_name = "bench_strong" + datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S') + ".csv"
-
+    
     for test in tests_strong:
         with open(report_name, 'a') as f:
             f.write(test[0] + ", ")
         checkout(test[0])
         build()
         do_test(test[1], test[2], test[3], test[0], report_name)
-
+     
      report_name = "bench_weak" + datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S') + ".csv"
 
      for test in tests_weak:
