@@ -400,18 +400,26 @@ void World::step_reproduce() {
   for (int i = 0; i < width_; i++) {
     for (int j = 0; j < height_; j++) {
 
+      
+
+#pragma omp parallel
       if (grid_cell_[i * width_ + j]->organism_ == nullptr) {
+
+        Organism* best = nullptr;
         Organism* org_n = nullptr;
 
+#pragma omp for
         for (int x = i - Common::Duplicate_Neighbors_Offset; x <= i + Common::Duplicate_Neighbors_Offset; x++) {
           for (int y = j - Common::Duplicate_Neighbors_Offset; y <= j + Common::Duplicate_Neighbors_Offset; y++) {
             if (x >= 0 && x < width_) {
               if (y >= 0 && y < height_) {
                 if (grid_cell_[x * width_ + y]->organism_ != nullptr) {
                   if (org_n != nullptr) {
-                    org_n = grid_cell_[x * width_ + y]->organism_->fitness_ < org_n->fitness_
-                      ? grid_cell_[x * width_ + y]->organism_
-                      : org_n;
+                      {
+                        org_n = grid_cell_[x * width_ + y]->organism_->fitness_ < org_n->fitness_
+                          ? grid_cell_[x * width_ + y]->organism_
+                          : org_n;
+                      }
                   }
                   else {
                     org_n = grid_cell_[x * width_ + y]->organism_;
@@ -422,10 +430,22 @@ void World::step_reproduce() {
           }
         }
 
-        if (org_n != nullptr) {
+        if (best == nullptr || (org_n != nullptr && best->fitness_ > org_n->fitness_)) {
+#pragma omp critical
+          {
+            if (best == nullptr) {
+              best = org_n;
+            }
+            else if (org_n != nullptr && best->fitness_ > org_n->fitness_) {
+              best->fitness_ = org_n->fitness_;
+            }
+          }
+        }
+
+        if (best != nullptr) {
           new_mutant_++;
-          org_n->dupli_success_++;
-          grid_cell_[i * width_ + j]->organism_ = new Organism(new DNA(org_n->dna_));
+          best->dupli_success_++;
+          grid_cell_[i * width_ + j]->organism_ = new Organism(new DNA(best->dna_));
           grid_cell_[i * width_ + j]->organism_->gridcell_ = grid_cell_[i * width_ + j];
           grid_cell_[i * width_ + j]->organism_->mutate();
           grid_cell_[i * width_ + j]->organism_->init_organism();
