@@ -4,7 +4,7 @@ import datetime
 import os
 import sys
 
-PROGRAM_PATH    = "D:/Users/Element/Documents/COURS/INSA/5IF/OT/ot3-pro2017/build/Release/pdc_evol_model.exe"
+PROGRAM_PATH    = "./pdc_evol_model"
 MS_BUILD_PATH   = "D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/MSBuild.exe"
 NB_STEPS        = 10
 
