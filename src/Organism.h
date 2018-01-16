@@ -41,7 +41,7 @@ class Organism {
     std::vector<Move*> move_list_;
 
     float metabolic_error[Common::Metabolic_Error_Precision];
-    float sum_metabolic_error;
+    float sum_metabolic_error = 0;
 
     GridCell* gridcell_;
 
