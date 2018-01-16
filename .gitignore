@@ -1,5 +1,6 @@
-# Build folder
+# Build folders
 build/
+tests/src/testOutput.exe
 
 # Visual studio
 .vs/
@@ -10,3 +11,4 @@ build/
 CMakeFiles/*
 CMakeCache.txt
 
+tests/output.txt
