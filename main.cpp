@@ -12,8 +12,8 @@ using namespace std;
 #define WORLD_SIZE 32
 
 int main(int argc, char * argv[]) {
-	int num_steps = 1000;
-	int world_size = 32;
+	int num_steps = Common::Number_Evolution_Step;
+	int world_size = WORLD_SIZE;
 	
 	if (argc >= 2)
 	{
