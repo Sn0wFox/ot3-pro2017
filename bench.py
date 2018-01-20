@@ -64,7 +64,7 @@ def do_test(steps, cells, cores, commit, report_name):
     # sys.stdout.write("\n")
     for i in range(NB_STEPS):
         # sys.stdout.write("\r === Doing benchmark on commit : " + str(commit) + ", with parameters " + str(steps) + ", "+ str(cells) + ", "+ str(cores) + " : " + str(i+1) + "/" + str(NB_STEPS) + "===")
-        sys.stdout.write("\r === Doing benchmark on commit : {}, with parameters {}, {}, {} : {:2}/{:2} (time so far {:06.2f}s) ===".format(commit, steps, cells, cores, i+1, NB_STEPS, time_taken))
+        print(" === Doing benchmark on commit : {}, with parameters {}, {}, {} : {:2}/{:2} (time so far {:06.2f}s) ===".format(commit, steps, cells, cores, i+1, NB_STEPS, time_taken))
 
         start = time.time()
         p = subprocess.Popen((PROGRAM_PATH, str(steps), str(cells), str(cores)),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -72,7 +72,6 @@ def do_test(steps, cells, cores, commit, report_name):
         p.wait()
         end = time.time()
         time_taken += (end-start)
-    sys.stdout.write("\n")
 
     with open(report_name, 'a') as f:
         f.write(str(steps) + ", " + str(cells) + ", " + str(cores) + ", " + str(time_taken/NB_STEPS) + "\n")
@@ -84,7 +83,7 @@ def build():
         p.communicate()
         p.wait()
     if os.name == "posix":
-        p = subprocess.Popen(("make", os.path.abspath(".")), cwd="./build")
+        p = subprocess.Popen(("make", os.path.abspath(".")), cwd=".")
         p.wait()
 
 def checkout(commit):
