@@ -84,7 +84,7 @@ def build():
         p.communicate()
         p.wait()
     if os.name == "posix":
-        p = subprocess.Popen(("make", os.path.abspath(".")), pwd="../build")
+        p = subprocess.Popen(("make", os.path.abspath(".")), cwd="./build")
         p.wait()
 
 def checkout(commit):
