@@ -11,4 +11,8 @@ tests/src/testOutput.exe
 CMakeFiles/*
 CMakeCache.txt
 
+# Tests
 tests/output.txt
+jobid
+hosts.list
+hosts.raw

@@ -93,6 +93,8 @@ def checkout(commit):
     p.wait()
     p = subprocess.Popen(("git", "checkout", commit))
     p.wait()
+    p = subprocess.Popen(("git", "pull"))
+    p.wait()
 
 
 
