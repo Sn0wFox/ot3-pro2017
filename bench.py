@@ -3,6 +3,7 @@ import time
 import datetime
 import os
 import sys
+import math
 
 PROGRAM_PATH    = "./pdc_evol_model"
 MS_BUILD_PATH   = "D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/MSBuild.exe"
@@ -11,27 +12,26 @@ NB_STEPS        = 10
 tests_strong  = []
 tests_weak    = []
 
-
+iterations = 10000
 size = 32
-tests_strong.append(["original_fixed", 10000, size, 1])
+tests_strong.append(["original_fixed", iterations, size, 1])
 for test in range(4):
-    tests_strong.append(["test_" + str(test), 10000, size, 1])
+    tests_strong.append(["test_" + str(test), iterations, size, 1])
 for cores in range(2, 33, 2):
-    tests_strong.append(["original_fixed", 10000, size, cores])
+    tests_strong.append(["original_fixed", iterations, size, cores])
     for test in range(4):
-        tests_strong.append(["test_" + str(test), 10000, size, cores])
+        tests_strong.append(["test_" + str(test), iterations, size, cores])
 
 
 size = 8
-while size <= 32:
-    tests_weak.append(["original_fixed", 10000, size, 1])
+cores = 1
+while cores <= 32:
+    isize = int(size)
+    tests_weak.append(["original_fixed", iterations, isize, cores])
     for test in range(4):
-        tests_weak.append(["test_" + str(test), 10000, size, 1])
-    for cores in range(2, 33, 2):
-        tests_weak.append(["original_fixed", 10000, size, cores])
-        for test in range(4):
-            tests_weak.append(["test_" + str(test), 10000, size, cores])
-    size *= 2
+        tests_weak.append(["test_" + str(test), iterations, isize, cores])
+    size *= math.sqrt(2)
+    cores *= 2
 
 
 report_name = ""
