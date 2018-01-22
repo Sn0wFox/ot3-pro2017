@@ -83,9 +83,10 @@ def build():
         p.communicate()
         p.wait()
     if os.name == "posix":
-        p = subprocess.Popen(("make", "-f", "Makefile", os.path.abspath("."), "clean"), cwd=".")
+        p = subprocess.Popen(("make", "-f", "Makefile", "clean"), cwd=".")
         p.wait()
-        p = subprocess.Popen(("make", "-f", "Makefile", os.path.abspath(".")), cwd=".")
+        time.sleep(0.1) 
+        p = subprocess.Popen(("make", "-f", "Makefile"), cwd=".")
         p.wait()
 
 def checkout(commit):
