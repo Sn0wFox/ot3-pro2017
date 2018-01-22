@@ -9,11 +9,13 @@ using namespace std;
 // These defined constants may be changed at compile time
 #define SEED1 897685687
 #define SEED2 897986875
-#define WORLD_SIZE 32
+#define WORLD_HEIGHT 16
+#define WORLD_WIDTH 32
 
 int main(int argc, char * argv[]) {
 	int num_steps = Common::Number_Evolution_Step;
-	int world_size = WORLD_SIZE;
+	int world_height = WORLD_HEIGHT;
+	int world_width = WORLD_WIDTH;
 	
 	if (argc >= 2)
 	{
@@ -21,12 +23,16 @@ int main(int argc, char * argv[]) {
 	}
 	if (argc >= 3)
 	{
-		world_size = atoi(argv[2]);
+		world_height = atoi(argv[2]);
 	}
 	if (argc >= 4)
 	{
+		world_width = atoi(argv[3]);
+	}
+	if (argc >= 5)
+	{
 		omp_set_dynamic(0);
-		omp_set_num_threads(atoi(argv[3]));
+		omp_set_num_threads(atoi(argv[4]));
 	}
 
 
@@ -34,7 +40,7 @@ int main(int argc, char * argv[]) {
   Common::init_binding_matrix(SEED1);
 
   printf("Create World\n");
-  World* world = new World(world_size, world_size, SEED2, num_steps);
+  World* world = new World(world_height, world_width, SEED2, num_steps);
 
   printf("Initialize environment\n");
   world->init_environment();
