@@ -83,6 +83,8 @@ def build():
         p.communicate()
         p.wait()
     if os.name == "posix":
+        p = subprocess.Popen(("make", os.path.abspath("."), "clean"), cwd=".")
+        p.wait()
         p = subprocess.Popen(("make", os.path.abspath(".")), cwd=".")
         p.wait()
 
