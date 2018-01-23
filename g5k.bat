@@ -3,7 +3,7 @@ SETLOCAL enabledelayedexpansion
 
 :: Create a job with n nodes
 echo Reserving 1 node on Nova (Lyon)...
-ssh lyon.g5k "oarsub \"sleep 10d\" -p \"cluster='nova'\" -l walltime=4 -t allow_classic_ssh | sed -n 's/OAR_JOB_ID=\(.*\)/\1/p'" > jobid
+ssh lyon.g5k "oarsub \"sleep 10d\" -p \"cluster='nova'\" -l walltime=8 -t allow_classic_ssh | sed -n 's/OAR_JOB_ID=\(.*\)/\1/p'" > jobid
 SET /p JOBID=<jobid
 
 echo Job ID is: %JOBID%
@@ -34,4 +34,6 @@ echo.
 echo --- Deploying and running...
 scp deploy.sh lyon.g5k:~/deploy.sh
 scp bench.py lyon.g5k:~/bench.py
-ssh lyon.g5k "./deploy.sh"
+set /p H=<hosts.list
+set H=%H:grid5000.fr=g5k%
+ssh %H% "./deploy.sh"
