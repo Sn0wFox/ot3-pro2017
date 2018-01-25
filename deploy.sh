@@ -19,5 +19,4 @@ else
 fi
 
 echo --------- Running tests...
-python bench.py
-echo --------- All done.
+nohup python bench.py &
